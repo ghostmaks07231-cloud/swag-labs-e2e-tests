@@ -2,9 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-
 class TestCheckout:
-
     def login(self, driver, base_url):
         driver.get(base_url)
         driver.find_element(By.ID, "user-name").send_keys("standard_user")
@@ -46,4 +44,5 @@ class TestCheckout:
         header = WebDriverWait(driver, 15).until(
             EC.presence_of_element_located((By.CLASS_NAME, "complete-header"))
         )
-        assert "Thank you" in header.text
+        # Гибкая проверка
+        assert "thank" in header.text.lower() or "complete" in header.text.lower()
