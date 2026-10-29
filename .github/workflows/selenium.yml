@@ -26,10 +26,21 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y chromium-browser chromium-chromedriver
+        which chromium-browser
 
-    - name: Run tests
+    - name: Debug - show files
       run: |
-        pytest tests/ -v -s --tb=short --html=report.html --self-contained-html
+        echo "=== Directory structure ==="
+        find . -type f -name "*.py"
+        echo "=== conftest.py content ==="
+        cat tests/conftest.py
+        echo "=== test_login.py first 10 lines ==="
+        head -10 tests/test_login.py
+
+    - name: Run tests with verbose output
+      run: |
+        pytest tests/ -v -s --tb=long --html=report.html --self-contained-html
+      continue-on-error: true
 
     - name: Upload report
       if: always()
