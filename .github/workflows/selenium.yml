@@ -7,6 +7,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    
+    container:
+      image: selenium/standalone-chrome:latest
+      options: --shm-size="2g"
 
     steps:
     - name: Checkout code
@@ -22,25 +26,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install selenium pytest pytest-html
 
-    - name: Install Chrome
+    - name: Run tests
       run: |
-        sudo apt-get update
-        sudo apt-get install -y chromium-browser chromium-chromedriver
-        which chromium-browser
-
-    - name: Debug - show files
-      run: |
-        echo "=== Directory structure ==="
-        find . -type f -name "*.py"
-        echo "=== conftest.py content ==="
-        cat tests/conftest.py
-        echo "=== test_login.py first 10 lines ==="
-        head -10 tests/test_login.py
-
-    - name: Run tests with verbose output
-      run: |
-        pytest tests/ -v -s --tb=long --html=report.html --self-contained-html
-      continue-on-error: true
+        pytest tests/ -v --html=report.html --self-contained-html
+      env:
+        SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
 
     - name: Upload report
       if: always()
